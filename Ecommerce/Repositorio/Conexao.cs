@@ -3,7 +3,31 @@ using System.Data;
 
 namespace Ecommerce.Repositorio
 {
-    public class Conexao
+    public class Conexao : IDisposable
     {
+        private MySqlConnection _connection;
+
+        //Passagem dos dados
+        public MySqlCommand MySqlCommand()
+        {
+            return _connection.CreateCommand();
+        }
+
+        //Abre a conexão
+        public Conexao(string connectionString)
+        {
+            _connection = new MySqlConnection(connectionString);
+            _connection.Open();
+        }
+
+        // Fecha a conexão
+        public void Dispose()
+        {
+            if (_connection != null && _connection.State == ConnectionState.Open)
+            {
+                _connection.Close();
+                _connection.Dispose();
+            }
+        }
     }
 }
