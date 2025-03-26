@@ -1,0 +1,9 @@
+C:\Users\2bmod\Desktop\Ecommerce\Ecommerce\obj\Debug\net8.0\Ecommerce.csproj.AssemblyReference.cache
+C:\Users\2bmod\Desktop\Ecommerce\Ecommerce\obj\Debug\net8.0\Ecommerce.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\2bmod\Desktop\Ecommerce\Ecommerce\obj\Debug\net8.0\Ecommerce.AssemblyInfoInputs.cache
+C:\Users\2bmod\Desktop\Ecommerce\Ecommerce\obj\Debug\net8.0\Ecommerce.AssemblyInfo.cs
+C:\Users\2bmod\Desktop\Ecommerce\Ecommerce\obj\Debug\net8.0\Ecommerce.csproj.CoreCompileInputs.cache
+C:\Users\2bmod\Desktop\Ecommerce\Ecommerce\obj\Debug\net8.0\Ecommerce.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\2bmod\Desktop\Ecommerce\Ecommerce\obj\Debug\net8.0\Ecommerce.RazorAssemblyInfo.cache
+C:\Users\2bmod\Desktop\Ecommerce\Ecommerce\obj\Debug\net8.0\Ecommerce.RazorAssemblyInfo.cs
+C:\Users\2bmod\Desktop\Ecommerce\Ecommerce\obj\Debug\net8.0\Ecommerce.sourcelink.json
