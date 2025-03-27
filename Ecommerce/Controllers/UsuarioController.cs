@@ -11,7 +11,7 @@ namespace Ecommerce.Controllers
         private readonly UsuarioRepositorio _usuarioRepositorio;
 
         //Construtor
-        public LoginController(UsuarioRepositorio usuarioRepositorio)
+        public UsuarioController(UsuarioRepositorio usuarioRepositorio)
         {
             _usuarioRepositorio = usuarioRepositorio;
         }

@@ -1,8 +1,7 @@
-﻿namespace Ecommerce.Repositorio;
-using Ecommerce.Models;
+﻿using Ecommerce.Models;
 using global::Ecommerce.Models;
 
-namespace Ecommerce.Repositorio
+namespace Ecommerce.repositorio
 {
     public class ProdutoRepositorio
     {
@@ -28,11 +27,5 @@ namespace Ecommerce.Repositorio
                 cmd.ExecuteNonQuery();
             }
         }
-
-        // FALTA CRIAR MEDOTO DE CONSULTA DO PRODUTO
-
-                return null;
-            }
-}
-}
+    }
 }

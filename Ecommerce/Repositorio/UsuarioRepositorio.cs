@@ -5,7 +5,6 @@ namespace Ecommerce.Repositorio
     public class UsuarioRepositorio
     {
         //Preparando a estrutura da conexão com o banco de dados
-
         private readonly string _connectionString;
 
         //Construtor

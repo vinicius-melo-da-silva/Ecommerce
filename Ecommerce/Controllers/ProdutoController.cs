@@ -23,9 +23,18 @@ namespace Ecommerce.Controllers
         }
 
         [HttpPost]
-        public IActionResult Cadastro_Produto()
+        public IActionResult Cadastro_Produto(Produto produto)
         {
-            return View();
+            //verifica se os dados do usuário são válidos (de acordo com as regras de validação definidas na classe Usuario).
+            if (ModelState.IsValid)
+            {
+                // Se os dados forem válidos, ele usa _usuarioRepositorio.
+                // AdicionarUsuario(usuario) para adicionar o novo usuário ao banco de dados e redireciona para a página de login.
+                _produtoRepositorio.AdicionarProduto(produto);
+
+                return RedirectToAction("Login");
+            }
+            return View(produto);
         }
     }
 }
