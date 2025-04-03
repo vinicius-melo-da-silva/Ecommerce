@@ -1,0 +1,26 @@
+-- Criando o banco de dados
+create database projetoecommerce;
+
+-- Usando  o banco de dados
+use projetoecommerce;
+
+-- Criando as tabelas do banco
+create table Usuario(
+Id int auto_increment,
+Nome varchar (50),
+Email varchar (50),
+Senha Varchar (50),
+primary key (Id)
+);
+
+create table Produtos(
+Id int auto_increment,
+Nome varchar (50),
+Descricao varchar (150),
+Preco Decimal (10, 2),
+primary key (Id)
+);
+
+-- Consultando as tabelas do banco
+Select * from Usuario;
+Select * from Produtos;

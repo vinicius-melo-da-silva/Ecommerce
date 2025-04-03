@@ -1,0 +1,456 @@
+******************************* PROJETO ASPNET *****************************************
+
+Passo 1: Criar o Projeto ASP.NET Core MVC (Model, View,Controller)
+
+Abra o Visual Studio e crie um novo projeto.
+
+Selecione "ASP.NET Core Web App (Model-View-Controller)" e clique em "Add".
+
+Defina o nome do projeto (ex: "Ecommerce") e escolha o local para salvar.
+
+Selecione ".NET 8.0 (ou superior)" e clique em "Criar".
+
+******************************************************************************************
+
+Passo 2 - Adicionar o arquivo .gitigore ((no terminal do Git Bash, criar no modo raiz: touch .gitigore)
+
+IR NO SITE https://www.toptal.com/developers/gitignore ESCOLHER AS OPÇÕES Visual Studio, ASP.NET CORE e clique em criar
+copiar o arquivo gerado e colar no .gitignore
+
+IMPORTENTE - Já tenho pronto o arquivo
+
+******************************************************************************************
+
+Passo 3 - Crie o Banco de Dados e depois SALVE o script do banco dentro da pasta do projeto
+
+Abra o MySQL Workbench  e crie um novo banco de dados.
+Crie as tabelas necessárias:
+Usuarios: (Id, Nome, Email, Senha)
+Produtos: (Id, Nome, Descricao, Preco)
+
+Instale no Pacote NuGet Package Manager > Gerenciar Pacotes NuGet para Solução):
+No Visual Studio, abra o "NuGet Package Manager" (Ferramentas(Tools) OU Botão direito em cima do nome do projeto ir em "NuGet Package Manager".
+Pesquise por "MySql.Data" e instale a versão mais recente.
+
+IMPORTENTE - Já tenho pronto o arquivo
+
+*******************************************************************************************
+
+Passo 4 - Versionamento
+
+cd desktop
+
+cd Ecommerce
+
+1º git config --global user.name "Vinicius"
+
+2º git config --global user.email viniciusmsilva.ds@gmail.com
+
+3º git init
+
+4º git status
+
+5º git add .
+
+6º git commit -m "Criando o Projeto Ecommerce com script do banco de dados e o arquivo gitignore"
+
+7º ir no GitHub e criar um repositorio com o mesmo Ecommerce deixar publico e criar repositorio
+
+8º pegar as 3 linhas criadas e colocar no Git Bash (dar enter)
+
+9º verificar se o projeto ja esta no GitHub
+
+AGORA VAMOS CRIAR A BRANCH
+
+10º git checkout -b dev
+
+11º git branch (verifica as branchs existentes)
+
+
+*******************************************************************************************
+
+Passo 3: Criar a Pasta Repositório
+
+Botão direito do mouse no Nome do Projeto Add->Folder-> Crie a Pasta "Repositorio":
+
+Botão direito do mouse em cima de "Repositorio" Add->class->Crie a classe "Conexao.cs":
+
+
+{
+    public class Conexao : IDisposable
+    {
+        private MySqlConnection _connection;
+
+        //Passagem dos dados
+        public MySqlCommand MySqlCommand()
+        {
+            return _connection.CreateCommand();
+        }
+
+        //Abre a conexão
+        public Conexao(string connectionString)
+        {
+            _connection = new MySqlConnection(connectionString);
+            _connection.Open();
+        }
+
+        // Fecha a conexão
+        public void Dispose()
+        {
+            if (_connection != null && _connection.State == ConnectionState.Open)
+            {
+                _connection.Close();
+                _connection.Dispose();
+            }
+        }
+    }
+}
+
+
+Botão direito do mouse em cima de "Repositorio" Add->class->Crie a classe chamada "UsuarioRepositorio.cs".
+
+
+{
+    public class UsuarioRepositorio
+    {
+        //Preparando a estrutura da conexão com o banco de dados
+
+        private readonly string _connectionString;
+
+        //Construtor
+        public UsuarioRepositorio(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("DefaultConnection"); //Default é padrão
+        }
+
+        // Criando o metodo adicionar usuario
+        public void AdicionarUsuario(Usuario usuario)
+        {
+            using (var db = new Conexao(_connectionString))
+            {
+                var cmd = db.MySqlCommand();
+                cmd.CommandText = "INSERT INTO Usuario (Nome, Email, Senha) VALUES (@Nome,@Email,@Senha)";
+                cmd.Parameters.AddWithValue("@Nome", usuario.Nome);
+                cmd.Parameters.AddWithValue("@Email", usuario.Email);
+                cmd.Parameters.AddWithValue("@Senha", usuario.Senha);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        // Criando metodo de obter usuário
+        public Usuario ObterUsuario(string email)
+        {
+            using (var db = new Conexao(_connectionString))
+            {
+                var cmd = db.MySqlCommand();
+                cmd.CommandText = "SELECT * FROM Usuario WHERE Email = @Email";
+                cmd.Parameters.AddWithValue("@Email", email);
+                cmd.ExecuteNonQuery();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new Usuario
+                        {
+                            Id = reader.GetInt32("Id"),
+                            Nome = reader.GetString("Nome"),
+                            Email = reader.GetString("Email"),
+                            Senha = reader.GetString("Senha"),
+
+                        };
+
+                    }
+
+                }
+                return null;
+            }
+        }
+    }
+}
+
+
+Botão direito do mouse em cima de "Repositorio" Add->class->Crie a classe chamada "ProdutoRepositorio.cs".
+
+
+{
+    public class ProdutoRepositorio
+    {
+        //Preparando a estrutura da conexão com o banco de dados
+        private readonly string _connectionString;
+
+        //Construtor
+        public ProdutoRepositorio(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("DefaultConnection"); //Default é padrão
+        }
+
+        // Criando o metodo adicionar produto
+        public void AdicionarProduto(Produto produto)
+        {
+            using (var db = new Conexao(_connectionString))
+            {
+                var cmd = db.MySqlCommand();
+                cmd.CommandText = "INSERT INTO Produtos (Nome, Descricao, Preco) VALUES (@Nome,@Descricao,@Preco)";
+                cmd.Parameters.AddWithValue("@Nome", produto.Nome);
+                cmd.Parameters.AddWithValue("@Descricao", produto.Descricao);
+                cmd.Parameters.AddWithValue("@Preco", produto.Preco);
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
+}
+
+
+Não esqueçer de importar
+using Ecommerce.Models;
+using System.Data;
+using MySql.Data.MySqlClient;
+
+git status
+git add .
+git commit -m "Criando a pasta repositório conexão,UsuarioRepositorio, ProdutoRepositorio e os codigos "
+
+*******************************************************************************************
+
+Passo 4: Criar os Modelos (Models)
+
+Botão direito do mouse em cima da pasta "Models".
+
+Botão direito do mouse em cima de "Models" Add->class->Crie a classe "Usuario.cs".
+
+Botão direito do mouse em cima de "Models" Add->class->Crie a classe "Produto.cs".
+
+Código das classes Usuario e Produos que  correspondentes às tabelas do banco de dados:
+
+
+// Usuario.cs
+
+{
+    public class Usuario
+    {
+        public int Id { get; set; }
+        public string Nome { get; set; }
+        public string Email { get; set; }
+        public string Senha { get; set; }
+    }
+}
+
+// Produto.cs
+
+{
+    public class Produto
+    {
+        public int Id { get; set; }
+        public string Nome { get; set; }
+        public string Descricao { get; set; }
+        public decimal Preco { get; set; }
+    }
+}
+
+git status
+git add .
+git commit -m "Criando as models usuario e produto "
+
+
+*******************************************************************************************
+
+Passo 5: Criar os Controladores (Controllers)
+
+Aqui é colocado os códigos do MYSQL como SELECT, INSERT, UPDATE, DELETE
+Botão direito do mouse em cima de Controllers - Add Controller->MVC Controlle-Empty -> nome "UsuarioController.cs"
+
+{
+    //O nome da controller vai ser sempre PascalCase: MinhaVariavel, camelCase: minhaVariavel
+
+    // Controller cria a view
+
+    public class LoginController : Controller //Controller sempre vai ser publica
+    {
+        
+        //Declara uma variavel privada somento leitura
+        private readonly UsuarioRepositorio _usuarioRepositorio;
+
+        //Construtor
+        public LoginController(UsuarioRepositorio usuarioRepositorio)
+        {
+            _usuarioRepositorio = usuarioRepositorio;
+        }
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost] //Manda os dados, envia o usuário e senha 
+        public IActionResult Login(String email, string senha)
+        {
+            //Ele usa _usuarioRepositorio.ObterUsuario(email) para buscar o usuário no banco de dados.
+            var usuario = _usuarioRepositorio.ObterUsuario(email);
+
+            //Se o usuário for encontrado e a senha estiver correta, ele redireciona o usuário para a página inicial (RedirectToAction("Index", "Home")).
+            if (usuario != null && usuario.Senha == senha) //Esse simbolo != é sinal de diferente
+            {
+                // Autenticação bem-sucedida
+                return RedirectToAction("Index", "Home");
+            }
+            //Caso contrário, ele adiciona um erro ao ModelState e retorna a visualização de login, exibindo a mensagem de erro.
+            ModelState.AddModelError("", "Email ou senha inválidos.");
+
+            //retorna a visualização (a página HTML) associada a este método
+            return View();
+        }
+
+        public IActionResult Cadastro ()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Cadastro(Usuario usuario)
+        {
+            //verifica se os dados do usuário são válidos (de acordo com as regras de validação definidas na classe Usuario).
+            if (ModelState.IsValid)
+            {
+                // Se os dados forem válidos, ele usa _usuarioRepositorio.
+                // AdicionarUsuario(usuario) para adicionar o novo usuário ao banco de dados e redireciona para a página de login.
+                _usuarioRepositorio.AdicionarUsuario(usuario);
+
+                // visualização de cadastro, exibindo os erros de validação
+
+                return RedirectToAction("Login");
+            }
+            return View(usuario);
+        }
+    }
+}
+
+
+Botão direito do mouse em cima de Controllers - Add Controller->MVC Controlle-Empty -> nome "ProdutoController.cs".
+
+{
+
+    public class ProdutoController : Controller
+    {
+        //Declara uma variavel privada somento leitura
+        private readonly ProdutoRepositorio _produtoRepositorio;
+      
+        //Construtor
+        public ProdutoController(ProdutoRepositorio produtoRepositorio)
+        {
+            _produtoRepositorio = produtoRepositorio;
+        }
+
+        public IActionResult Cadastro()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Cadastro(Produto produto)
+        {
+            //verifica se os dados do usuário são válidos (de acordo com as regras de validação definidas na classe Usuario).
+            if (ModelState.IsValid)
+            {
+                // Se os dados forem válidos, ele usa _usuarioRepositorio.
+                // AdicionarUsuario(usuario) para adicionar o novo usuário ao banco de dados e redireciona para a página de login.
+                _produtoRepositorio.AdicionarProduto(produto);
+
+                return RedirectToAction("Login");
+            }
+            return View(produto);
+        }
+    }
+}
+
+ 
+git status
+git add .
+git commit -m "Criando as controlls e os codigos"
+
+
+*******************************************************************************************
+
+Passo 5: Crie as Views:
+
+UsuarioController:
+
+Botão direito do mouse em cima da IActionResult Login da controller UsuarioController -> Add View -> Razor View Empty-> nome da página Login.cshtml
+
+Botão direito do mouse em cima da IActionResult Cadastro da controller UsuarioController -> Add View -> Razor View Empty-> nome da página Cadastro.cshtml
+
+ProdutoController:
+
+Botão direito do mouse em cima da IActionResult Cadastro da controller ProdutoController -> Add View -> Razor View Empty-> nome da página Cadastro.cshtml
+
+
+Depois ir em  Views->Shared-Layout.cshtml -e mudar os nomes das controller e das páginas
+
+
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Login">Login de Usuário</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Cadastro">Cadastro de Usuário</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-area="" asp-controller="Produto" asp-action="Cadastro">Cadastro de Produto</a>
+</li>
+
+
+git status
+git add .
+git commit -m "Criando as viws e ajustando a shared"
+
+*******************************************************************************************
+
+
+Passo 8: Configurar a Injeção de Dependência
+
+Registre as Dependências:
+
+No arquivo Program.cs localizado na solução do projeto
+
+Injeção de dependência no UsuarioRepositorio e ProdutoRepositorio.
+
+builder.Services.AddScoped<UsuarioRepositorio>();
+builder.Services.AddScoped<ProdutoRepositorio>();
+
+
+git status
+git add .
+git commit -m "Configurando a Injeção de Dependência"
+
+
+*******************************************************************************************
+
+
+Passo 9: String de Conexão
+
+Clique em appsettings.json localizado na solução do projeto adicione a connection string do MySQL:
+
+
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "MySQLConnection": "server=localhost;database=projetoecommerce;user=root;password= 12345678"
+  }
+}
+
+
+git status
+git add .
+git commit -m "Configurando a String de Conexão"
+
+
+
+
